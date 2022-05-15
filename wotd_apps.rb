@@ -1,7 +1,7 @@
 
 class WotdApp
   def initialize
-    @app = Rack::Builder.new(lambda {|env| [200, {}, ['OK, /']]}) do
+    @app = Rack::Builder.new do
       map '/chronological' do
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /chronological']] }
       end
@@ -14,6 +14,7 @@ class WotdApp
       map '/random' do
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /random']] }
       end
+      run lambda {|env| [200, {}, ['OK, /']]}
     end
   end
   
