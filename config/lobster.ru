@@ -1,8 +1,8 @@
 require 'rack/lobster'
 require './wotd_apps.rb'
 
+use Rack::Reloader
 rootApp = Rack::Builder.new do
-  use Rack::Reloader
   map "/lobster" do
     run Rack::Lobster.new
   end

@@ -3,9 +3,9 @@ require 'rack'
 class WotdApp
   def initialize
     @app = Rack::Builder.new do
-      use Rack::ContentType
       map '/' do
-        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /']] }
+        use Rack::ContentType
+        run lambda { |env| [200, {}, ['OK, /']] }
       end
       
       map '/chronological' do
