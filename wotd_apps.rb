@@ -3,7 +3,11 @@ class WotdApp
   def initialize
     @app = Rack::Builder.new do
       map '/chronological' do
-        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /chronological']] }
+        map '/today' do
+          use Rack::ContentType, 'application/json'
+          run lambda { |env| [200, {}, ['OK, ', Time.now.to_s]] }
+        end
+        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, specify the date in the path.']] }
       end
       map '/alphabetical' do
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /alphabetical']] }
