@@ -9,5 +9,19 @@ module Apps
     end
   end
 
+  class JsonBody
+    def initialize(app)
+      @app = app
+    end
+
+    def call(env)
+      status, headers, body = @app.call(env)
+      jsonBody = body.map { |e| 
+        e.instance_of?(::String) ? e : JSON.generate(e)
+      }
+      [status, headers, jsonBody]
+    end
+  end
+
   module_function :j
 end

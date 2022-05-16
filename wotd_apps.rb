@@ -5,6 +5,8 @@ class WotdApp
   def initialize
     @app = Rack::Builder.new do
       map '/chronological' do
+        use Rack::ContentType, 'application/json'
+        use Apps::JsonBody
         map '/today' do
           run Apps.j(Dictionary.wordOfTheDay())
         end
@@ -33,7 +35,7 @@ class WotdApp
         date = Date.strptime(env[Rack::PATH_INFO], '/%Y/%m/%d')
         body = [Dictionary.wordOfTheDay(date)]
       rescue Date::Error
-        body = ['Invalid date. Specify valid date in /yyyy/mm/dd format.']
+        body = [{'error': 'Invalid date. Specify valid date in /yyyy/mm/dd format.'}]
       end
       [200, {}, body]
     end
