@@ -8,7 +8,7 @@ class WotdApp
         map '/today' do
           run Apps.j(Dictionary.wordOfTheDay())
         end
-        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, specify the date in the path.']] }
+        run Chrono.new
       end
       map '/alphabetical' do
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /alphabetical']] }
@@ -25,5 +25,17 @@ class WotdApp
   
   def call(env)
     @app.call(env)
+  end
+
+  class Chrono
+    def call(env)
+      begin
+        date = Date.strptime(env[Rack::PATH_INFO], '/%Y/%m/%d')
+        body = [Dictionary.wordOfTheDay(date)]
+      rescue Date::Error
+        body = ['Invalid date. Specify valid date in /yyyy/mm/dd format.']
+      end
+      [200, {}, body]
+    end
   end
 end
