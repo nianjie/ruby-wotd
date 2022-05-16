@@ -6,7 +6,7 @@ class WotdApp
     @app = Rack::Builder.new do
       map '/chronological' do
         map '/today' do
-          run Apps.JSON(Dictionary.wordOfTheDay())
+          run Apps.j(Dictionary.wordOfTheDay())
         end
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, specify the date in the path.']] }
       end

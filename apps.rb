@@ -1,7 +1,7 @@
 module Apps
   require 'json'
 
-  def JSON(json)
+  def j(json)
     Rack::Builder.app do
       use Rack::ContentType, 'application/json'
       json = JSON.generate(json) unless json.instance_of?(::String)
@@ -9,5 +9,5 @@ module Apps
     end
   end
 
-  module_function :JSON
+  module_function :j
 end
