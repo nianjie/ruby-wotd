@@ -8,7 +8,7 @@ class WotdApp
         use Rack::ContentType, 'application/json'
         use Apps::JsonBody
         map '/today' do
-          run Apps.j(Dictionary.wordOfTheDay())
+          run lambda {|env| [200, {}, [Dictionary.wordOfTheDay]]}
         end
         run Chrono.new
       end
