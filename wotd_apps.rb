@@ -1,11 +1,12 @@
+require './apps.rb'
+require './dic.rb'
 
 class WotdApp
   def initialize
     @app = Rack::Builder.new do
       map '/chronological' do
         map '/today' do
-          use Rack::ContentType, 'application/json'
-          run lambda { |env| [200, {}, ['OK, ', Time.now.to_s]] }
+          run Apps.JSON(Dictionary.wordOfTheDay())
         end
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, specify the date in the path.']] }
       end
