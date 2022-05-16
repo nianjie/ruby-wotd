@@ -8,7 +8,7 @@ class WotdApp
         use Rack::ContentType, 'application/json'
         use Apps::JsonBody
         map '/today' do
-          run lambda {|env| [200, {}, [Dictionary.wordOfTheDay]]}
+          run Chrono.new(true)
         end
         run Chrono.new
       end
@@ -30,12 +30,16 @@ class WotdApp
   end
 
   class Chrono
+    def initialize(is_today = false)
+      @is_today = is_today
+    end
+
     def call(env)
       begin
-        date = Date.strptime(env[Rack::PATH_INFO], '/%Y/%m/%d')
+        date = @is_today ? Date.today : Date.strptime(env[Rack::PATH_INFO], '/%Y/%m/%d')
         body = [Dictionary.wordOfTheDay(date)]
       rescue Date::Error
-        body = [{'error': 'Invalid date. Specify valid date in /yyyy/mm/dd format.'}]
+        body = [{'error': 'Invalid date. Specify date in /yyyy/mm/dd format.'}]
       end
       [200, {}, body]
     end
