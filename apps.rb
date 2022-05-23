@@ -16,10 +16,8 @@ module Apps
 
     def call(env)
       status, headers, body = @app.call(env)
-      jsonBody = body.map { |e| 
-        e.instance_of?(::String) ? e : JSON.generate(e)
-      }
-      [status, headers, jsonBody]
+      jsonBody = JSON.generate(body)
+      [status, headers, [jsonBody]]
     end
   end
 

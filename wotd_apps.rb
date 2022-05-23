@@ -13,7 +13,9 @@ class WotdApp
         run Chrono.new
       end
       map '/alphabetical' do
-        run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /alphabetical']] }
+        use Rack::ContentType, 'application/json'
+        use Apps::JsonBody
+        run Alphabet.new
       end
       map '/count' do
         run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK, /count']] }
@@ -41,6 +43,16 @@ class WotdApp
       rescue Date::Error
         body = [{'error': 'Invalid date. Specify date in /yyyy/mm/dd format.'}]
       end
+      [200, {}, body]
+    end
+  end
+
+  class Alphabet
+    def call(env)
+      words = env[Rack::PATH_INFO].split('/').reject(&:empty?)
+      body = words.map { |word| 
+        Dictionary.getWord(word)
+      }
       [200, {}, body]
     end
   end
