@@ -1,12 +1,21 @@
+require './firebase/client.rb'
+
 class Dictionary
-  def self.wordOfTheDay(the_day = Date.today)
-    puts the_day
-    word = {title: 'audit', definition: 'audit', link: 'https://www.oxfordlearnersdictionaries.com/definition/english/audit_1', updated: '2020-12-17T01:00:00Z'}
+  FIREBASE_ROOT = %q[https://q8732.firebaseio.com/]
+  class_eval do |_|
+    @db_client = Client.new(databaseURL: FIREBASE_ROOT)
   end
 
+  def self.wordOfTheDay(the_day = Date.today)
+    res = @db_client.get("/chronological/#{the_day.strftime('%Y/%-m/%-d')}")
+    word = getWord(res.body) if res.body
+  end
+  
   class << self
     def getWord(word)
-      {title: word, definition: word, link: 'https://www.oxfordlearnersdictionaries.com/definition/english/audit_1', updated: '2020-12-17T01:00:00Z'}
+      res = @db_client.get "/word/#{word}"
+      res.body
     end
   end
+
 end
